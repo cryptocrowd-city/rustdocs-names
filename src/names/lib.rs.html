@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../names/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../names/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -328,36 +328,51 @@
 <span id="328">328</span>
 <span id="329">329</span>
 <span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
 
-<span class="doccomment">/// A pallet that defines a system to register and update names</span>
-<span class="doccomment">/// in a Substrate chain.  This provides (roughly) the functionality</span>
-<span class="doccomment">/// of the Namecoin blockchain.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The core concept is that of a &quot;name&quot;.  This is some identifier (the exact</span>
-<span class="doccomment">/// type can be configured through the module&#39;s Trait), e.g. a human-readable</span>
-<span class="doccomment">/// name as string.  Each name is unique, and has an associated value and owner.</span>
-<span class="doccomment">/// Everyone can read the database of names, but only the owner can make</span>
-<span class="doccomment">/// changes to it.  This typically means changing the value to publish some</span>
-<span class="doccomment">/// data with the name, but the owner can also transfer names to a different</span>
-<span class="doccomment">/// owner.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Names are given out on a first come, first serve basis.  Each name that</span>
-<span class="doccomment">/// is not yet registered (and valid for the system) can be registered by</span>
-<span class="doccomment">/// any account (which may incur a fee for registration, and then maybe also</span>
-<span class="doccomment">/// for updates to the name).  Once registered, the name is owned by the</span>
-<span class="doccomment">/// account that first registered it.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// After a certain number of blocks, names may expire and become usable again.</span>
-<span class="doccomment">/// By updating a name before the expiration, the current owner can keep</span>
-<span class="doccomment">/// ownership.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The names module defines basic extrinsics to perform name operations</span>
-<span class="doccomment">/// (register / update / transfer names) and events corresponding to changes</span>
-<span class="doccomment">/// in the name database.  But if custom logic needs to be applied in addition</span>
-<span class="doccomment">/// by the runtime, it may use the exposed functions check_assuming_signed</span>
-<span class="doccomment">/// and execute directly.</span>
+<span class="doccomment">//! A pallet that defines a system to register and update names</span>
+<span class="doccomment">//! in a Substrate chain.  This provides (roughly) the functionality</span>
+<span class="doccomment">//! of the [Namecoin](https://www.namecoin.org/) blockchain.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The core concept is that of a *name*.  This is some identifier (the exact</span>
+<span class="doccomment">//! type can be configured through the module&#39;s [`Trait`](Trait)),</span>
+<span class="doccomment">//! e.g. a human-readable name as string.  Each name is unique, and has an</span>
+<span class="doccomment">//! associated value and owner.  Everyone can read the database of names, but</span>
+<span class="doccomment">//! only the owner can make changes to it.  This typically means changing the</span>
+<span class="doccomment">//! value to publish some data with the name, but the owner can also transfer</span>
+<span class="doccomment">//! names to a different owner.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Names are given out on a *first come, first serve* basis.  Each name that</span>
+<span class="doccomment">//! is not yet registered (and valid for the system) can be registered by</span>
+<span class="doccomment">//! any account (which may incur a fee for registration, and then maybe also</span>
+<span class="doccomment">//! for updates to the name).  Once registered, the name is owned by the</span>
+<span class="doccomment">//! account that first registered it.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! After a certain number of blocks, names may expire and become usable again.</span>
+<span class="doccomment">//! By updating a name before the expiration, the current owner can keep</span>
+<span class="doccomment">//! ownership.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The `names` module defines basic extrinsics to perform name operations</span>
+<span class="doccomment">//! ([register](Module::update) / [update](Module::update) /</span>
+<span class="doccomment">//! [transfer](Module::transfer) names) and [events](RawEvent) corresponding to</span>
+<span class="doccomment">//! changes in the name database.  But if custom logic needs to be applied in</span>
+<span class="doccomment">//! addition by the runtime, it may use the exposed functions</span>
+<span class="doccomment">//! [`check_assuming_signed`](Module::check_assuming_signed) and</span>
+<span class="doccomment">//! [`execute`](Module::execute) directly.  The name database can be accessed</span>
+<span class="doccomment">//! from external code by using [`lookup`](Module::lookup).</span>
 
 <span class="kw">use</span> <span class="ident">frame_support</span>::{
     <span class="ident">decl_module</span>, <span class="ident">decl_storage</span>, <span class="ident">decl_event</span>, <span class="ident">ensure</span>,
@@ -374,7 +389,7 @@
 
     <span class="doccomment">/// Type for names.</span>
     <span class="kw">type</span> <span class="ident">Name</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">FullCodec</span>;
-    <span class="doccomment">/// Type for name values.</span>
+    <span class="doccomment">/// Type for values associated to names.</span>
     <span class="kw">type</span> <span class="ident">Value</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">FullCodec</span>;
 
     <span class="doccomment">/// Type for currency operations (in order to pay for names).</span>
@@ -384,17 +399,17 @@
     <span class="kw">type</span> <span class="ident">Event</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Event</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">system</span>::<span class="ident">Trait</span><span class="op">&gt;</span>::<span class="ident">Event</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// Computes and returns the currency fee the sender has to pay for</span>
-    <span class="doccomment">/// a certain operation.  If None is returned, it means that the</span>
+    <span class="doccomment">/// a certain operation.  If `None` is returned, it means that the</span>
     <span class="doccomment">/// operation is invalid (e.g. the name is too short).</span>
     <span class="kw">fn</span> <span class="ident">get_name_fee</span>(<span class="ident">op</span>: <span class="kw-2">&amp;</span><span class="ident">Operation</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>)
         <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Currency</span> <span class="kw">as</span> <span class="ident">Currency</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">AccountId</span><span class="op">&gt;</span><span class="op">&gt;</span>::<span class="ident">Balance</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// For a given name operation, compute the number of blocks before the</span>
-    <span class="doccomment">/// name will expire again.  If None is returned, then the name will</span>
+    <span class="doccomment">/// For a given name operation, computes the number of blocks before the</span>
+    <span class="doccomment">/// name will expire again.  If `None` is returned, then the name will</span>
     <span class="doccomment">/// never expire.</span>
     <span class="kw">fn</span> <span class="ident">get_expiration</span>(<span class="ident">op</span>: <span class="kw-2">&amp;</span><span class="ident">Operation</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">BlockNumber</span><span class="op">&gt;</span>;
 
-    <span class="doccomment">/// &quot;Takes ownership&quot; of the fee paid for a name registration.  This</span>
+    <span class="doccomment">/// &quot;Takes ownership&quot; of the fee paid for a name operation.  This</span>
     <span class="doccomment">/// function can just do nothing to effectively burn the fee, it may</span>
     <span class="doccomment">/// deposit it to a developer account, or it may give it out to miners.</span>
     <span class="kw">fn</span> <span class="ident">deposit_fee</span>(<span class="ident">value</span>: <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Currency</span> <span class="kw">as</span> <span class="ident">Currency</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">AccountId</span><span class="op">&gt;</span><span class="op">&gt;</span>::<span class="ident">NegativeImbalance</span>);
@@ -409,14 +424,7 @@
     <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">T</span>::<span class="ident">Value</span>,
     <span class="doccomment">/// The name&#39;s current owner.</span>
     <span class="kw">pub</span> <span class="ident">owner</span>: <span class="ident">T</span>::<span class="ident">AccountId</span>,
-    <span class="doccomment">/// The block number when the name expires or None if it does not expire.</span>
-    <span class="doccomment">/// While we also have an explicit index mapping block numbers to names</span>
-    <span class="doccomment">/// that expire, the value here is stored a) for informative purposes</span>
-    <span class="doccomment">/// (so one can query when a certain name expires), and b) so that it</span>
-    <span class="doccomment">/// can overrule the expiration index:  If a name is updated, then we</span>
-    <span class="doccomment">/// are not removing it from the old expiration index; instead, we will</span>
-    <span class="doccomment">/// simply not expire names when processing a the expiration index if their</span>
-    <span class="doccomment">/// value here does not match the one from the index.</span>
+    <span class="doccomment">/// The block number when the name expires or `None` if it does not expire.</span>
     <span class="kw">pub</span> <span class="ident">expiration</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">BlockNumber</span><span class="op">&gt;</span>,
 }
 
@@ -424,13 +432,21 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>, <span class="ident">derive</span>(<span class="ident">Debug</span>))]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">OperationType</span> {
+    <span class="doccomment">/// This operation registers a name that does not exist yet.</span>
     <span class="ident">Registration</span>,
+    <span class="doccomment">/// This operation updates an existing name.</span>
     <span class="ident">Update</span>,
 }
 
-<span class="doccomment">/// All data necessary to actually perform a name operation.  This is returned</span>
-<span class="doccomment">/// by the validation function, and can then be passed to the execution function</span>
-<span class="doccomment">/// if a runtime wants to do its own logic in addition.</span>
+<span class="doccomment">/// All data necessary to actually perform a name operation.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is returned by the</span>
+<span class="doccomment">/// [validation function](Module::check_assuming_signed), and can then</span>
+<span class="doccomment">/// be passed to the [execution function](Module::execute) if a runtime wants</span>
+<span class="doccomment">/// to do its own logic in addition.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A reference to an `Operation` struct is also passed to the [`Trait`](Trait)</span>
+<span class="doccomment">/// functions that need to determine e.g. the name fee for the operation.</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>, <span class="ident">derive</span>(<span class="ident">Debug</span>))]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Operation</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Trait</span><span class="op">&gt;</span> {
@@ -438,7 +454,7 @@
     <span class="kw">pub</span> <span class="ident">operation</span>: <span class="ident">OperationType</span>,
     <span class="doccomment">/// The name being operated on.</span>
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">T</span>::<span class="ident">Name</span>,
-    <span class="doccomment">/// The value it is being set to.</span>
+    <span class="doccomment">/// The value that is being associated to the name.</span>
     <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">T</span>::<span class="ident">Value</span>,
 
     <span class="doccomment">/// The sender of the name (who pays the name fee).</span>
@@ -452,8 +468,8 @@
 
 <span class="macro">decl_storage</span><span class="macro">!</span> {
     <span class="kw">trait</span> <span class="ident">Store</span> <span class="kw">for</span> <span class="ident">Module</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Trait</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">TemplateModule</span> {
-        <span class="doccomment">/// The main name -&gt; data mapping.</span>
-        <span class="ident">Names</span>: <span class="ident">map</span> <span class="ident">T</span>::<span class="ident">Name</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NameData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+        <span class="doccomment">/// The main mapping from names to [associated data](NameData).</span>
+        <span class="ident">Names</span> <span class="ident">get</span>(<span class="ident">lookup</span>): <span class="ident">map</span> <span class="ident">T</span>::<span class="ident">Name</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NameData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>;
         <span class="doccomment">/// All names (as both the second key and the value) that may expire at</span>
         <span class="doccomment">/// the given block height (first key).  We use this so we can</span>
         <span class="doccomment">/// efficiently process expirations whenever we process a new block.</span>
@@ -468,9 +484,10 @@
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Module</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Trait</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw">enum</span> <span class="ident">Call</span> <span class="kw">where</span> <span class="ident">origin</span>: <span class="ident">T</span>::<span class="ident">Origin</span> {
         <span class="kw">fn</span> <span class="ident">deposit_event</span>() <span class="op">=</span> <span class="ident">default</span>;
 
-        <span class="doccomment">/// Tries to update a name with a given value.  If the name does not</span>
-        <span class="doccomment">/// exist yet, it will be created.  If the name exists, then only the</span>
-        <span class="doccomment">/// current owner can update it.</span>
+        <span class="doccomment">/// Tries to update a name with a given value.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// If the name does not exist yet, it will be created.  If the name</span>
+        <span class="doccomment">/// exists, then only the current owner can update it.</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="ident">origin</span>, <span class="ident">name</span>: <span class="ident">T</span>::<span class="ident">Name</span>, <span class="ident">value</span>: <span class="ident">T</span>::<span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DispatchResult</span> {
             <span class="kw">let</span> <span class="ident">who</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">check_assuming_signed</span>(<span class="ident">who</span>, <span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="ident">value</span>), <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
@@ -478,9 +495,10 @@
             <span class="prelude-val">Ok</span>(())
         }
 
-        <span class="doccomment">/// Tries to transfer a name to a given recipient.  If the name does</span>
-        <span class="doccomment">/// not exist, it will be registered directly to them with a default</span>
-        <span class="doccomment">/// value.</span>
+        <span class="doccomment">/// Tries to transfer a name to a given recipient.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// If the name does not exist, it will be registered directly to them</span>
+        <span class="doccomment">/// with a [default value](std::default::Default).</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transfer</span>(<span class="ident">origin</span>, <span class="ident">name</span>: <span class="ident">T</span>::<span class="ident">Name</span>, <span class="ident">recipient</span>: <span class="ident">T</span>::<span class="ident">AccountId</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DispatchResult</span> {
             <span class="kw">let</span> <span class="ident">who</span> <span class="op">=</span> <span class="ident">ensure_signed</span>(<span class="ident">origin</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">check_assuming_signed</span>(<span class="ident">who</span>, <span class="ident">name</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">recipient</span>))<span class="question-mark">?</span>;
@@ -509,14 +527,16 @@
     }
 
     <span class="doccomment">/// Checks if a name operation is valid, assuming that we already know</span>
-    <span class="doccomment">/// it was signed by the given account.  Value and recipient are optional.</span>
-    <span class="doccomment">/// If the value is missing, we use the existing value or the default</span>
-    <span class="doccomment">/// value if the name does not exist yet.  If the recipient is missing,</span>
-    <span class="doccomment">/// we set it to the sender account.</span>
+    <span class="doccomment">/// it was signed by the given account.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Value and recipient are optional.  If the value is missing, we use the</span>
+    <span class="doccomment">/// existing value or the [default value](std::default::Default) if the</span>
+    <span class="doccomment">/// name does not exist yet.  If the recipient is missing, we set it to</span>
+    <span class="doccomment">/// the `sender` account.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function returns either an error if the operation is not valid,</span>
-    <span class="doccomment">/// or the data that should be passed to execute later on if the transaction</span>
-    <span class="doccomment">/// is valid.</span>
+    <span class="doccomment">/// or the [data](Operation) that should be passed to</span>
+    <span class="doccomment">/// [`execute`](Module::execute) later on if the transaction is valid.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_assuming_signed</span>(<span class="ident">sender</span>: <span class="ident">T</span>::<span class="ident">AccountId</span>, <span class="ident">name</span>: <span class="ident">T</span>::<span class="ident">Name</span>,
                                  <span class="ident">value</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Value</span><span class="op">&gt;</span>,
                                  <span class="ident">recipient</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">AccountId</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Operation</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
@@ -566,14 +586,18 @@
         <span class="prelude-val">Ok</span>(<span class="ident">op</span>)
     }
 
-    <span class="doccomment">/// Executes the state change (and fires events) for a given name operation.</span>
-    <span class="doccomment">/// This should be called after check_assuming_signed (passing its result),</span>
-    <span class="doccomment">/// and when potential other checks have been done as well.</span>
+    <span class="doccomment">/// Executes the state change (and fires events) for a given</span>
+    <span class="doccomment">/// [name operation](Operation).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This should be called after</span>
+    <span class="doccomment">/// [`check_assuming_signed`](Module::check_assuming_signed) (passing its</span>
+    <span class="doccomment">/// result), and when potential other checks have been done as well.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function may actually fail (return an error) if the fee withdrawal</span>
     <span class="doccomment">/// is not possible.  This can happen if some funds were spent externally</span>
-    <span class="doccomment">/// between the call to check_assuming_signed and this function.  If that</span>
-    <span class="doccomment">/// happens, then execute will be a noop.</span>
+    <span class="doccomment">/// between the call to</span>
+    <span class="doccomment">/// [`check_assuming_signed`](Module::check_assuming_signed) and this</span>
+    <span class="doccomment">/// function.  If that happens, then `execute` will be a noop.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute</span>(<span class="ident">op</span>: <span class="ident">Operation</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DispatchResult</span> {
         <span class="comment">/* As the very first step, handle the name fee.  This makes sure
            that if withdrawal fails, it will not cause any other changes.  */</span>
